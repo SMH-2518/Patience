@@ -1,4 +1,4 @@
-package com.example.assignment // CHANGE TO YOUR PACKAGE NAME
+package com.example.assignment 
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -51,7 +51,6 @@ startY = ballView.y
     }
     private fun setupTouchListener() {
         ballView.setOnTouchListener { view, event ->
-            // 1. ADD THIS: Stop everything if game over or currently resetting
             if (!game || isResetting) return@setOnTouchListener true
 
             when (event.action) {
@@ -85,39 +84,27 @@ startY = ballView.y
             return
         }
         pathBitmap?.let { bitmap ->
-            // Calculate center point underneath the ball
             val centerX = (currentX + ballView.width / 2).toInt()
             val centerY = (currentY + ballView.height / 2).toInt()
-
-            // Ensure coordinates are within bitmap boundaries to avoid crashes
             if (centerX in 0 until bitmap.width && centerY in 0 until bitmap.height) {
-                // Get pixel color at the center point
                 val pixelColor = bitmap.getPixel(centerX, centerY)
-
-                // Check luminance (brightness). White is bright, Black is dark.
-                // Using green component proxy for B&W image brightness.
                 if (Color.green(pixelColor) < 100) {
                     resetGame()
                 }
             }
         }
     }
-
-    // --- THIS IS THE FIXED FUNCTION ---
     private fun resetGame() {
-        // 1. Lock the game logic
         isResetting = true
 
         Toast.makeText(this, "Hit the border!", Toast.LENGTH_SHORT).show()
-
-        // 2. Instant Teleport
         ballView.x = startX
         ballView.y = startY
     }
 
     private fun winGame() {
-        game = false // Stop movement
-        tvComplete.visibility = View.VISIBLE // Show sign
+        game = false 
+        tvComplete.visibility = View.VISIBLE 
         Toast.makeText(this, "Congratulations!", Toast.LENGTH_LONG).show()
     }
 }
