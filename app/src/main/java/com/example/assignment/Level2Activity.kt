@@ -1,4 +1,4 @@
-package com.example.assignment // CHANGE TO YOUR PACKAGE NAME
+package com.example.assignment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -20,25 +20,18 @@ class Level2Activity : AppCompatActivity() {
     private lateinit var bgImageView: ImageView
     private lateinit var tvComplete: TextView
     private var pathBitmap: Bitmap? = null
-
-    // Variables for touch dragging
     private var dX = 0f
     private var dY = 0f
-    // Variables to store starting position for reset
     private var startX = 0f
     private var startY = 0f
     private var isGameActive = true
     private var isResetting = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.level2) // Changed layout to level2.xml
-
-        // 1. Initialize Views
+        setContentView(R.layout.level2)
         ballView = findViewById(R.id.ball_view)
         bgImageView = findViewById(R.id.background_image)
         tvComplete = findViewById(R.id.tvCompleteSign)
-
-        // 2. Wait for layout to be drawn to get accurate measurements and bitmap
         bgImageView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 bgImageView.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -48,15 +41,10 @@ class Level2Activity : AppCompatActivity() {
     }
 
     private fun setupGame() {
-        // Get starting coordinates
         startX = ballView.x
         startY = ballView.y
-
-        // Extract the bitmap (the actual image data) from the ImageView background
-        // This is crucial for checking pixel colors.
         val drawable = bgImageView.drawable as BitmapDrawable
         pathBitmap = drawable.bitmap
-        // Scale bitmap to match the actual view size on screen if necessary
         pathBitmap = Bitmap.createScaledBitmap(pathBitmap!!, bgImageView.width, bgImageView.height, true)
 
         setupTouchListener()
@@ -64,7 +52,6 @@ class Level2Activity : AppCompatActivity() {
 
     private fun setupTouchListener() {
         ballView.setOnTouchListener { view, event ->
-            // 1. ADD THIS: Stop everything if game over or currently resetting
             if (!isGameActive || isResetting) return@setOnTouchListener true
 
             when (event.action) {
@@ -93,48 +80,32 @@ class Level2Activity : AppCompatActivity() {
     }
 
     private fun checkGameStatus(currentX: Float, currentY: Float) {
-        // 1. WIN CONDITION CHECK: Reached near the top?
-        // If the ball's top edge is near y=0 (top of screen)
         if (currentY < 50) {
             winGame()
             return
         }
-
-        // 2. COLLISION CHECK: Are we on the black area?
         pathBitmap?.let { bitmap ->
-            // Calculate center point underneath the ball
             val centerX = (currentX + ballView.width / 2).toInt()
             val centerY = (currentY + ballView.height / 2).toInt()
-
-            // Ensure coordinates are within bitmap boundaries to avoid crashes
             if (centerX in 0 until bitmap.width && centerY in 0 until bitmap.height) {
-                // Get pixel color at the center point
                 val pixelColor = bitmap.getPixel(centerX, centerY)
-
-                // Check luminance (brightness). White is bright, Black is dark.
-                // Using green component proxy for B&W image brightness.
-                // Assuming a black background and a white path, a dark pixel means collision.
                 if (Color.green(pixelColor) < 100) {
                     resetGame()
                 }
             }
         }
     }
-
     private fun resetGame() {
-        // 1. Lock the game logic
         isResetting = true
 
         Toast.makeText(this, "Hit the border!", Toast.LENGTH_SHORT).show()
-
-        // 2. Instant Teleport
         ballView.x = startX
         ballView.y = startY
     }
 
     private fun winGame() {
-        isGameActive = false // Stop movement
-        tvComplete.visibility = View.VISIBLE // Show sign
+        isGameActive = false 
+        tvComplete.visibility = View.VISIBLE 
         Toast.makeText(this, "Congratulations!", Toast.LENGTH_LONG).show()
     }
 }
