@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/game_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/img" />
+    <View
+        android:id="@+id/ball_view"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/black_ball"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="50dp" />
+    <TextView
+        android:id="@+id/tvCompleteSign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LEVEL COMPLETE!"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#00FF00"
+        android:layout_gravity="center"
+        android:background="#AA000000"
+        android:padding="20dp"
+        android:visibility="gone" />
+</FrameLayout>
