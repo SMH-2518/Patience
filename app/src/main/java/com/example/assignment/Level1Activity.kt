@@ -1,4 +1,4 @@
-package com.example.assignment 
+package com.example.assignment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -16,49 +16,53 @@ import androidx.appcompat.app.AppCompatActivity
 
 class Level1Activity : AppCompatActivity() {
 
-   private lateinit var ballView :View
-   private lateinit var bgImageView : ImageView
-   private lateinit var tvComplete : TextView
-   private var pathBitmap :Bitmap? = null
+    private lateinit var ballView: View
+    private lateinit var bgImageView: ImageView
+    private lateinit var tvComplete: TextView
+    private var pathBitmap: Bitmap? = null
     private var dX = 0f
-    private var dY=0f
-    private var startX= 0f
+    private var dY = 0f
+    private var startX = 0f
     private var startY = 0f
-    private var game = true
+    private var isGameActive = true
     private var isResetting = false
-    override fun onCreate(savedInstanceState:Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.level1)
         ballView = findViewById(R.id.ball_view)
         bgImageView = findViewById(R.id.background_image)
         tvComplete = findViewById(R.id.tvCompleteSign)
-
-        bgImageView.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
+        bgImageView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 bgImageView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 setupGame()
             }
         })
     }
-    private fun setupGame(){
+
+    private fun setupGame() {
         startX = ballView.x
-startY = ballView.y
+        startY = ballView.y
         val drawable = bgImageView.drawable as BitmapDrawable
         pathBitmap = drawable.bitmap
-        pathBitmap = Bitmap.createScaledBitmap(pathBitmap!!,bgImageView.width,bgImageView.height,true)
+        pathBitmap = Bitmap.createScaledBitmap(pathBitmap!!, bgImageView.width, bgImageView.height, true)
+
         setupTouchListener()
     }
+
     private fun setupTouchListener() {
         ballView.setOnTouchListener { view, event ->
-            if (!game || isResetting) return@setOnTouchListener true
+            if (!isGameActive) return@setOnTouchListener true
 
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    isResetting = false
                     dX = view.x - event.rawX
                     dY = view.y - event.rawY
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    if (isResetting) return@setOnTouchListener true
+
                     var newX = event.rawX + dX
                     var newY = event.rawY + dY
 
@@ -71,13 +75,11 @@ startY = ballView.y
                     checkGameStatus(newX, newY)
                 }
                 MotionEvent.ACTION_UP -> {
-                    isResetting = false
                 }
             }
             true
         }
     }
-
     private fun checkGameStatus(currentX: Float, currentY: Float) {
         if (currentY < 50) {
             winGame()
@@ -96,15 +98,14 @@ startY = ballView.y
     }
     private fun resetGame() {
         isResetting = true
-
         Toast.makeText(this, "Hit the border!", Toast.LENGTH_SHORT).show()
         ballView.x = startX
         ballView.y = startY
     }
 
     private fun winGame() {
-        game = false 
-        tvComplete.visibility = View.VISIBLE 
+        isGameActive = false
+        tvComplete.visibility = View.VISIBLE
         Toast.makeText(this, "Congratulations!", Toast.LENGTH_LONG).show()
     }
 }
