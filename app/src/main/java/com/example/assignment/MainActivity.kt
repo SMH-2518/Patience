@@ -9,13 +9,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // Only keeping the Play button logic
         val btnPlay = findViewById<Button>(R.id.btnPlay)
-
         btnPlay.setOnClickListener {
-            // This takes the user directly to the Levels selection screen
-            val intent = Intent(this, LevelsActivity::class.java)
+            val intent = Intent(this, SecondActivity::class.java)
             startActivity(intent)
         }
     }
