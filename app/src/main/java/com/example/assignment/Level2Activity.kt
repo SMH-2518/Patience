@@ -39,7 +39,6 @@ class Level2Activity : AppCompatActivity() {
             }
         })
     }
-
     private fun setupGame() {
         startX = ballView.x
         startY = ballView.y
@@ -49,17 +48,19 @@ class Level2Activity : AppCompatActivity() {
 
         setupTouchListener()
     }
-
     private fun setupTouchListener() {
         ballView.setOnTouchListener { view, event ->
-            if (!isGameActive || isResetting) return@setOnTouchListener true
+            if (!isGameActive) return@setOnTouchListener true
 
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    isResetting = false
                     dX = view.x - event.rawX
                     dY = view.y - event.rawY
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    if (isResetting) return@setOnTouchListener true
+
                     var newX = event.rawX + dX
                     var newY = event.rawY + dY
 
@@ -72,15 +73,13 @@ class Level2Activity : AppCompatActivity() {
                     checkGameStatus(newX, newY)
                 }
                 MotionEvent.ACTION_UP -> {
-                    isResetting = false
                 }
             }
             true
         }
     }
-
     private fun checkGameStatus(currentX: Float, currentY: Float) {
-        if (currentY < 50) {
+        if (currentY < 80) {
             winGame()
             return
         }
@@ -97,15 +96,15 @@ class Level2Activity : AppCompatActivity() {
     }
     private fun resetGame() {
         isResetting = true
-
         Toast.makeText(this, "Hit the border!", Toast.LENGTH_SHORT).show()
         ballView.x = startX
         ballView.y = startY
     }
 
     private fun winGame() {
-        isGameActive = false 
+        isGameActive = false
         tvComplete.visibility = View.VISIBLE 
         Toast.makeText(this, "Congratulations!", Toast.LENGTH_LONG).show()
     }
 }
+
